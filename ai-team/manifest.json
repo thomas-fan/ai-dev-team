@@ -1,0 +1,242 @@
+{
+  "version": "1.0.0",
+  "team": {
+    "name": "AI Software Development Team v1",
+    "audience": "single human operator",
+    "product_type": "web-saas",
+    "operating_style": "human-led",
+    "collaboration_mode": "asynchronous handoffs",
+    "repo_scope": "single project, single repository"
+  },
+  "required_handoff_fields": [
+    "objective",
+    "inputs",
+    "constraints",
+    "artifacts_out",
+    "done_criteria",
+    "open_questions",
+    "escalation_trigger"
+  ],
+  "persistence": {
+    "state_root": ".ai-team",
+    "project_state_file": ".ai-team/project-state.md",
+    "task_root": ".ai-team/tasks",
+    "archive_root": ".ai-team/archive",
+    "operational_artifacts": [
+      "project-state.md",
+      "session-state.md",
+      "communication-log.md"
+    ],
+    "templates": {
+      "project_state": "ai-team/templates/project-state.md",
+      "session_state": "ai-team/templates/session-state.md",
+      "communication_log": "ai-team/templates/communication-log.md"
+    }
+  },
+  "loop_control": {
+    "playbook": "ai-team/playbooks/loop-governance.md",
+    "human_supervision_model": "human checkpoints on bounded autonomous loops",
+    "max_same_owner_iterations": 3,
+    "max_cross_role_rework_cycles": 2,
+    "max_failed_validation_cycles": 2,
+    "max_open_questions_before_pause": 5,
+    "mandatory_pause_triggers": [
+      "same blocker appears twice",
+      "same owner iterates three times without new evidence",
+      "QA and implementation bounce twice without narrowing scope",
+      "task changes architecture or schema after implementation has started",
+      "session-state cannot name a concrete next action"
+    ],
+    "required_fields": [
+      "loop_objective",
+      "iteration_count",
+      "progress_evidence",
+      "stop_condition",
+      "human_checkpoint"
+    ]
+  },
+  "roles": [
+    {
+      "id": "orchestrator",
+      "title": "Orchestrator / Engineering Manager",
+      "file": "ai-team/roles/orchestrator.md",
+      "consumes": [
+        "raw request",
+        "human priority",
+        "handoff artifacts"
+      ],
+      "produces": [
+        "TaskBrief",
+        "routing decision",
+        "status summary"
+      ],
+      "human_gate": []
+    },
+    {
+      "id": "product-analyst",
+      "title": "Product Analyst",
+      "file": "ai-team/roles/product-analyst.md",
+      "consumes": [
+        "TaskBrief"
+      ],
+      "produces": [
+        "SpecDoc"
+      ],
+      "human_gate": [
+        "requirements_confirmation"
+      ]
+    },
+    {
+      "id": "tech-lead",
+      "title": "Tech Lead / Architect",
+      "file": "ai-team/roles/tech-lead.md",
+      "consumes": [
+        "SpecDoc",
+        "TaskBrief"
+      ],
+      "produces": [
+        "TechPlan",
+        "code review decision"
+      ],
+      "human_gate": [
+        "technical_plan_confirmation"
+      ]
+    },
+    {
+      "id": "feature-engineer",
+      "title": "Feature Engineer",
+      "file": "ai-team/roles/feature-engineer.md",
+      "consumes": [
+        "TechPlan"
+      ],
+      "produces": [
+        "ImplementationPacket"
+      ],
+      "human_gate": []
+    },
+    {
+      "id": "qa-test-engineer",
+      "title": "QA / Test Engineer",
+      "file": "ai-team/roles/qa-test-engineer.md",
+      "consumes": [
+        "ImplementationPacket",
+        "SpecDoc",
+        "TechPlan"
+      ],
+      "produces": [
+        "QAVerdict"
+      ],
+      "human_gate": []
+    },
+    {
+      "id": "release-sre",
+      "title": "Release / SRE Engineer",
+      "file": "ai-team/roles/release-sre.md",
+      "consumes": [
+        "ImplementationPacket",
+        "QAVerdict",
+        "TechPlan"
+      ],
+      "produces": [
+        "ReleaseChecklist"
+      ],
+      "human_gate": [
+        "merge_release_confirmation"
+      ]
+    }
+  ],
+  "handoff_objects": [
+    {
+      "id": "TaskBrief",
+      "template": "ai-team/templates/task-brief.md"
+    },
+    {
+      "id": "SpecDoc",
+      "template": "ai-team/templates/spec-doc.md"
+    },
+    {
+      "id": "TechPlan",
+      "template": "ai-team/templates/tech-plan.md"
+    },
+    {
+      "id": "ImplementationPacket",
+      "template": "ai-team/templates/implementation-packet.md"
+    },
+    {
+      "id": "QAVerdict",
+      "template": "ai-team/templates/qa-verdict.md"
+    },
+    {
+      "id": "ReleaseChecklist",
+      "template": "ai-team/templates/release-checklist.md"
+    }
+  ],
+  "workflow": {
+    "standard": [
+      "orchestrator",
+      "product-analyst",
+      "tech-lead",
+      "feature-engineer",
+      "qa-test-engineer",
+      "release-sre",
+      "human"
+    ],
+    "exceptions": [
+      {
+        "name": "low-risk-small-task",
+        "path": [
+          "orchestrator",
+          "tech-lead",
+          "feature-engineer",
+          "qa-test-engineer",
+          "release-sre",
+          "human"
+        ]
+      },
+      {
+        "name": "high-priority-bug",
+        "path": [
+          "tech-lead",
+          "feature-engineer",
+          "qa-test-engineer",
+          "release-sre",
+          "human"
+        ]
+      }
+    ],
+    "human_gates": [
+      "requirements_confirmation",
+      "technical_plan_confirmation",
+      "merge_release_confirmation"
+    ]
+  },
+  "playbooks": [
+    "ai-team/playbooks/operating-model.md",
+    "ai-team/playbooks/escalation-rules.md",
+    "ai-team/playbooks/staffing-signals.md",
+    "ai-team/playbooks/persistence-and-recovery.md",
+    "ai-team/playbooks/loop-governance.md"
+  ],
+  "examples": [
+    "ai-team/examples/new-feature-crud.md",
+    "ai-team/examples/schema-change-task.md"
+  ],
+  "staffing_signals": [
+    {
+      "signal": "Repeated UX ambiguity delays spec approval in three or more tasks per sprint",
+      "add_role": "UI/UX specialist"
+    },
+    {
+      "signal": "Security review becomes a release blocker in two or more consecutive releases",
+      "add_role": "security specialist"
+    },
+    {
+      "signal": "Data pipelines or model work dominates roadmap for a month or longer",
+      "add_role": "data/ai specialist"
+    },
+    {
+      "signal": "Tech lead review queue exceeds two active tasks for five business days",
+      "add_role": "independent reviewer"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Dev Team"
+  short_description: "Run a structured AI software team"
+  default_prompt: "Use $ai-dev-team to run this software task through the orchestrator and the right specialist agents."
