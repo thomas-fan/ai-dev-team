@@ -1,6 +1,49 @@
 # AI Software Development Team v1
 
-This repository contains an opinionated, reusable operating system for a six-agent AI software development team.
+This repository is a reusable operating system for a six-agent AI software development team. It gives you clear role definitions, standardized handoff artifacts, loop controls, and project-local persistent state so long-running agent work stays resumable and reviewable.
+
+## Why this exists
+
+Most agent workflows break down in one of three ways:
+
+- roles are fuzzy, so responsibility drifts
+- context lives in chat, so interruptions are expensive
+- autonomous loops keep running after progress stops
+
+This project addresses those problems with:
+
+- `6 fixed roles`: Orchestrator, Product Analyst, Tech Lead, Feature Engineer, QA, and Release/SRE
+- `6 canonical artifacts`: TaskBrief, SpecDoc, TechPlan, ImplementationPacket, QAVerdict, ReleaseChecklist
+- `persistent repo state`: `.ai-team/` stores resumable task state inside each project
+- `bounded loop governance`: repeated cycles must show evidence or pause for human review
+
+## Start Here
+
+If you want to use this in a real project, the shortest path is:
+
+```bash
+python3 scripts/validate_ai_team.py
+python3 scripts/init_ai_team_state.py /path/to/project --task-id TASK-001
+bash scripts/install_ai_dev_team_skill.sh
+```
+
+Then start a new Codex session with:
+
+```text
+Use $ai-dev-team to build this feature through the right agent workflow.
+```
+
+## Workflow At A Glance
+
+```mermaid
+flowchart LR
+    A["Orchestrator"] --> B["Product Analyst"]
+    B --> C["Tech Lead"]
+    C --> D["Feature Engineer"]
+    D --> E["QA / Test Engineer"]
+    E --> F["Release / SRE"]
+    F --> G["Human Approval"]
+```
 
 ## What is included
 
