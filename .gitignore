@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Project-local AI team runtime state
+.ai-team/
+
+# Temporary files
+*.tmp
+*.swp
