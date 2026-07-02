@@ -150,6 +150,14 @@ bash scripts/install_ai_dev_team_skill.sh
 
 This copies `codex-skills/ai-dev-team` into `~/.codex/skills/ai-dev-team` or `$CODEX_HOME/skills/ai-dev-team`.
 
+To refresh Codex after you update this repository, run:
+
+```bash
+bash scripts/update_ai_dev_team_skill.sh
+```
+
+This reinstalls the current repo version over the globally installed skill and preserves a backup of the previous installed copy.
+
 After installation, start a new session and invoke it with a prompt like:
 
 ```text
